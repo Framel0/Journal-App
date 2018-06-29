@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="horizontal">
+
+    <View
+        android:id="@+id/mark"
+        android:layout_width="@dimen/dimen_5"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_10"
+        android:paddingEnd="@dimen/padding_16"
+        android:paddingStart="@dimen/padding_10">
+
+        <LinearLayout
+            android:id="@+id/date_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingEnd="@dimen/dimen_5"
+            android:paddingStart="@dimen/dimen_5">
+
+            <TextView
+                android:id="@+id/journal_date"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:textColor="@color/timestamp"
+                android:textSize="@dimen/journal_list_text"
+                android:textStyle="bold"
+                tools:text="27" />
+
+            <TextView
+                android:id="@+id/journal_time"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:textColor="@color/timestamp"
+                android:textSize="@dimen/timestamp"
+                tools:text="11:45" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/journal_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/date_time"
+            android:textColor="@color/note_list_text"
+            android:textSize="@dimen/timestamp"
+            android:textStyle="bold"
+            tools:text="Title" />
+
+        <TextView
+            android:id="@+id/journal_entry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/journal_title"
+            android:layout_toEndOf="@id/date_time"
+            android:maxLines="3"
+            android:textColor="@color/note_list_text"
+            android:textSize="@dimen/timestamp"
+            tools:text="entry" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

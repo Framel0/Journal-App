@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Journal</string>
+
+    <string name="msg_no_journals">No journals found!</string>
+    <string name="title_activity_read">Reading</string>
+    <string name="title_activity_edit">Edit</string>
+    <string name="title_activity_new_journal">New Journal</string>
+    <string name="done">Done</string>
+    <string name="search">Search</string>
+    <string name="journal_saved">Journal Saved</string>
+    <string name="entry_title">Entry title…</string>
+    <string name="entry_text">Entry text…</string>
+    <string name="enter_text">Enter text</string>
+    <string name="enter_title">Enter title</string>
+    <string name="search_hint">Search</string>
+    <string name="delete">Delete</string>
+    <string name="title_activity_home">Home</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="add_new_journal">Add new journal</string>
+    <string name="sign_out">Sign out</string>
+    <string name="click_here_to_login">Click here to Login</string>
+</resources>
