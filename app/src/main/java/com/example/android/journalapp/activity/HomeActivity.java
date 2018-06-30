@@ -1,5 +1,6 @@
 package com.example.android.journalapp.activity;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -69,6 +70,10 @@ public class HomeActivity extends AppCompatActivity
     private TextView loginTv;
     private SearchView searchView;
     private DatabaseHelper db;
+
+    // Progress dialog
+    private ProgressDialog pDialog;
+
     // [START declare_auth]
     private FirebaseAuth mAuth;
     // [END declare_auth]
@@ -174,6 +179,10 @@ public class HomeActivity extends AppCompatActivity
             }
         });
 
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Please wait...");
+        pDialog.setCancelable(false);
+
         // [START config_signin]
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -276,7 +285,7 @@ public class HomeActivity extends AppCompatActivity
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         // [START_EXCLUDE silent]
-//        showProgressDialog();
+        showpDialog();
         // [END_EXCLUDE]
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -297,7 +306,7 @@ public class HomeActivity extends AppCompatActivity
                         }
 
                         // [START_EXCLUDE]
-//                        hideProgressDialog();
+                        hidepDialog();
                         // [END_EXCLUDE]
                     }
                 });
@@ -327,7 +336,7 @@ public class HomeActivity extends AppCompatActivity
 
 
     private void updateUI(FirebaseUser user) {
-//        hideProgressDialog();
+        hidepDialog();
         if (user != null) {
 
             // name, email
@@ -360,6 +369,16 @@ public class HomeActivity extends AppCompatActivity
 
 
         }
+    }
+
+    private void showpDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hidepDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
     }
 
 
