@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -34,39 +35,13 @@ public class EditActivity extends AppCompatActivity {
 
     private int position;
 
-    private EditText entryTitleEt;
-    private EditText entryTextEt;
+    private EditText entryTitle;
+    private EditText entryText;
 
     private TextView wordWatcher;
     private TextView charWatcher;
 
-    TextWatcher textWatcher = new TextWatcher() {
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before,
-                                  int count) {
-            charWatcher.setText("Chars:" + String.valueOf(s.length()));
-            wordWatcher.setText("Words:" + wordCount(s.toString()));
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count,
-                                      int after) {
-            charWatcher.setText("Chars:" + String.valueOf(s.length()));
-            wordWatcher.setText("Words:" + wordCount(s.toString()));
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-            charWatcher.setText("Chars:" + String.valueOf(s.length()));
-            wordWatcher.setText("Words:" + wordCount(s.toString()));
-
-        }
-    };
-
-    public static long wordCount(String line) {
+    private static long wordCount(String line) {
         long numWords = 0;
         int index = 0;
         boolean prevWhiteSpace = true;
@@ -79,77 +54,6 @@ public class EditActivity extends AppCompatActivity {
             prevWhiteSpace = currWhiteSpace;
         }
         return numWords;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        db = new DatabaseHelper(this);
-
-        journalList.addAll(db.getAllJournals());
-
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(EditActivity.this);
-
-        String dateStamp = sharedPref.getString("dateStamp", "");
-        String timeStamp = sharedPref.getString("timeStamp", "");
-        String journalTitle = sharedPref.getString("journalTitle", "");
-        String journalText = sharedPref.getString("journalText", "");
-        position = sharedPref.getInt("position", 0);
-
-        TextView date = findViewById(R.id.journal_date);
-        TextView time = findViewById(R.id.journal_time);
-
-        entryTitleEt = findViewById(R.id.entry_title_et);
-        entryTextEt = findViewById(R.id.entry_text_et);
-
-
-        date.setText(formatDate(dateStamp));
-        time.setText(timeStamp);
-        entryTitleEt.setText(journalTitle);
-        entryTextEt.setText(journalText);
-
-        charWatcher = findViewById(R.id.char_watcher);
-        wordWatcher = findViewById(R.id.word_watcher);
-
-        entryTextEt.addTextChangedListener(textWatcher);
-
-        ImageButton doneBtn = findViewById(R.id.done_btn);
-
-
-        doneBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Show toast message when no text is entered
-                if (TextUtils.isEmpty(entryTitleEt.getText().toString())) {
-
-                    Toast.makeText(getApplicationContext(), R.string.enter_title, Toast.LENGTH_SHORT).show();
-
-                } else if (TextUtils.isEmpty(entryTextEt.getText().toString())) {
-
-                    Toast.makeText(getApplicationContext(), R.string.enter_text, Toast.LENGTH_SHORT).show();
-
-                } else {
-
-                    // create new journal
-                    updateJournal(entryTitleEt.getText().toString().trim(), entryTextEt.getText().toString().trim(), position);
-
-                    startActivity(new Intent(EditActivity.this, HomeActivity.class));
-                    finish();
-
-                    Toast.makeText(getApplicationContext(), R.string.journal_saved, Toast.LENGTH_SHORT).show();
-
-                }
-
-            }
-        });
     }
 
     /**
@@ -168,6 +72,100 @@ public class EditActivity extends AppCompatActivity {
         }
 
         return "";
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        db = new DatabaseHelper(this);
+
+        journalList.addAll(db.getAllJournals());
+
+
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(EditActivity.this);
+
+        String dateStamp = sharedPref.getString("dateStamp", "");
+        String timeStamp = sharedPref.getString("timeStamp", "");
+        String journalTitle = sharedPref.getString("journalTitle", "");
+        String journalText = sharedPref.getString("journalText", "");
+        position = sharedPref.getInt("position", 0);
+
+        TextView date = findViewById(R.id.text_journal_date);
+        TextView time = findViewById(R.id.text_journal_time);
+
+        entryTitle = findViewById(R.id.edit_entry_title);
+        entryText = findViewById(R.id.edit_entry_text);
+
+
+        date.setText(formatDate(dateStamp));
+        time.setText(timeStamp);
+
+        entryTitle.setText(journalTitle);
+        entryText.setText(journalText);
+
+        charWatcher = findViewById(R.id.text_char_watcher);
+        wordWatcher = findViewById(R.id.text_word_watcher);
+
+        entryText.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                charWatcher.setText(String.format("%s%s", getString(R.string.characters_word), String.valueOf(s.length())));
+                wordWatcher.setText(String.format(Locale.getDefault(), "%s%d", getString(R.string.words_word), wordCount(s.toString())));
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+                charWatcher.setText(String.format("%s%s", getString(R.string.characters_word), String.valueOf(s.length())));
+                wordWatcher.setText(String.format(Locale.getDefault(), "%s%d", getString(R.string.words_word), wordCount(s.toString())));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                charWatcher.setText(String.format("%s%s", getString(R.string.characters_word), String.valueOf(s.length())));
+                wordWatcher.setText(String.format(Locale.getDefault(), "%s%d", getString(R.string.words_word), wordCount(s.toString())));
+            }
+        });
+
+        ImageButton doneBtn = findViewById(R.id.btn_done);
+
+
+        doneBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Show toast message when no text is entered
+                if (TextUtils.isEmpty(entryTitle.getText().toString())) {
+
+                    Toast.makeText(getApplicationContext(), R.string.enter_title_toast, Toast.LENGTH_SHORT).show();
+
+                } else if (TextUtils.isEmpty(entryText.getText().toString())) {
+
+                    Toast.makeText(getApplicationContext(), R.string.enter_text_toast, Toast.LENGTH_SHORT).show();
+
+                } else {
+
+                    // create new journal
+                    updateJournal(entryTitle.getText().toString().trim(), entryText.getText().toString().trim(), position);
+
+                    startActivity(new Intent(EditActivity.this, HomeActivity.class));
+                    finish();
+
+                    Toast.makeText(getApplicationContext(), R.string.journal_saved_toast, Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
     }
 
     /**

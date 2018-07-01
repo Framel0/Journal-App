@@ -5,11 +5,12 @@
     android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:clickable="true"
-    android:foreground="?attr/selectableItemBackground"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     android:orientation="horizontal">
 
     <View
-        android:id="@+id/mark"
+        android:id="@+id/view_mark"
         android:layout_width="@dimen/dimen_5"
         android:layout_height="match_parent"
         android:background="@color/colorAccent" />
@@ -22,7 +23,7 @@
         android:paddingStart="@dimen/padding_10">
 
         <LinearLayout
-            android:id="@+id/date_time"
+            android:id="@+id/date_time_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -30,7 +31,7 @@
             android:paddingStart="@dimen/dimen_5">
 
             <TextView
-                android:id="@+id/journal_date"
+                android:id="@+id/text_journal_date"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
@@ -40,7 +41,7 @@
                 tools:text="27" />
 
             <TextView
-                android:id="@+id/journal_time"
+                android:id="@+id/text_journal_time"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
@@ -51,23 +52,24 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/journal_title"
+            android:id="@+id/text_journal_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/date_time"
-            android:textColor="@color/note_list_text"
+            android:layout_toEndOf="@id/date_time_layout"
+            android:maxLines="1"
+            android:textColor="@color/journal_list_text"
             android:textSize="@dimen/timestamp"
             android:textStyle="bold"
             tools:text="Title" />
 
         <TextView
-            android:id="@+id/journal_entry"
+            android:id="@+id/text_journal_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/journal_title"
-            android:layout_toEndOf="@id/date_time"
-            android:maxLines="3"
-            android:textColor="@color/note_list_text"
+            android:layout_below="@id/text_journal_title"
+            android:layout_toEndOf="@id/date_time_layout"
+            android:maxLines="2"
+            android:textColor="@color/journal_list_text"
             android:textSize="@dimen/timestamp"
             tools:text="entry" />
 

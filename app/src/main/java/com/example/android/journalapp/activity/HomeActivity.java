@@ -57,18 +57,16 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "GoogleActivity";
+    private static final String TAG = "HomeActivity";
     private static final int RC_SIGN_IN = 9001;
     private JournalsAdapter mAdapter;
     private List<Journal> journalList = new ArrayList<>();
     private TextView noJournalsView;
     private CoordinatorLayout coordinatorLayout;
-    private View navHeader;
     private ImageView userImage;
     private TextView userName;
     private TextView userEmail;
-    private TextView loginTv;
-    private SearchView searchView;
+    private TextView login;
     private DatabaseHelper db;
 
     // Progress dialog
@@ -91,7 +89,7 @@ public class HomeActivity extends AppCompatActivity
 
         coordinatorLayout = findViewById(R.id.coordinator_layout);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        noJournalsView = findViewById(R.id.empty_journals_view);
+        noJournalsView = findViewById(R.id.text_empty_journals_view);
 
         db = new DatabaseHelper(this);
 
@@ -121,8 +119,7 @@ public class HomeActivity extends AppCompatActivity
 
         /*
           On long press on RecyclerView item, open alert dialog
-          with options to choose
-           Delete
+          with an option Delete
           */
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this,
                 recyclerView, new RecyclerTouchListener.ClickListener() {
@@ -166,13 +163,13 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Navigation view header
-        navHeader = navigationView.getHeaderView(0);
-        userName = navHeader.findViewById(R.id.user_name);
-        userEmail = navHeader.findViewById(R.id.user_email);
-        loginTv = navHeader.findViewById(R.id.login_tv);
-        userImage = navHeader.findViewById(R.id.user_image);
+        View navHeader = navigationView.getHeaderView(0);
+        userName = navHeader.findViewById(R.id.text_user_name);
+        userEmail = navHeader.findViewById(R.id.text_user_email);
+        login = navHeader.findViewById(R.id.text_login);
+        userImage = navHeader.findViewById(R.id.image_user_image);
 
-        loginTv.setOnClickListener(new View.OnClickListener() {
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signIn();
@@ -196,55 +193,8 @@ public class HomeActivity extends AppCompatActivity
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
+
     }
-
-    /**
-     * Deleting journal from SQLite and removing the
-     * item from the list by its position
-     */
-    private void deleteJournal(int position) {
-        // deleting the journal from db
-        db.deleteJournal(journalList.get(position));
-
-        // removing the journal from the list
-        journalList.remove(position);
-        mAdapter.notifyItemRemoved(position);
-
-        toggleEmptyNotes();
-    }
-
-    /**
-     * Toggling list and empty journals view
-     */
-    private void toggleEmptyNotes() {
-        // you can check journalList.size() > 0
-
-        if (db.getJournalsCount() > 0) {
-            noJournalsView.setVisibility(View.GONE);
-        } else {
-            noJournalsView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    /**
-     * Opens dialog with Edit - Delete options
-     * Delete - 0
-     */
-    private void showActionsDialog(final int position) {
-        CharSequence colors[] = new CharSequence[]{"Delete"};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setItems(colors, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                deleteJournal(position);
-
-            }
-        });
-        builder.show();
-    }
-
 
     // [START on_start_check_user]
     @Override
@@ -255,7 +205,6 @@ public class HomeActivity extends AppCompatActivity
         updateUI(currentUser);
     }
     // [END on_start_check_user]
-
 
     // [START onactivityresult]
     @Override
@@ -279,6 +228,136 @@ public class HomeActivity extends AppCompatActivity
         }
     }
     // [END onactivityresult]
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        // listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // filter recycler view when query submitted
+                mAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                // filter recycler view when text is changed
+                mAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.app_bar_search) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_new_journal) {
+
+            Intent i = new Intent(HomeActivity.this, NewJournalActivity.class);
+
+            startActivity(i);
+
+        } else if (id == R.id.nav_sign_out) {
+
+            signOut();
+
+        }
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    /**
+     * Toggling list and empty journals view
+     */
+    private void toggleEmptyNotes() {
+        // you can check journalList.size() > 0
+
+        if (db.getJournalsCount() > 0) {
+            noJournalsView.setVisibility(View.GONE);
+        } else {
+            noJournalsView.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    /**
+     * Deleting journal from SQLite and removing the
+     * item from the list by its position
+     */
+    private void deleteJournal(int position) {
+        // deleting the journal from db
+        db.deleteJournal(journalList.get(position));
+
+        // removing the journal from the list
+        journalList.remove(position);
+        mAdapter.notifyItemRemoved(position);
+
+        toggleEmptyNotes();
+    }
+
+
+    /**
+     * Opens dialog with Edit - Delete options
+     * Delete - 0
+     */
+    private void showActionsDialog(final int position) {
+        CharSequence colors[] = new CharSequence[]{"Delete"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(colors, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                deleteJournal(position);
+
+            }
+        });
+        builder.show();
+    }
 
 
     // [START auth_with_google]
@@ -351,7 +430,7 @@ public class HomeActivity extends AppCompatActivity
 //                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(userImage);
 
-            loginTv.setVisibility(View.GONE);
+            login.setVisibility(View.GONE);
 
         } else {
 
@@ -365,7 +444,7 @@ public class HomeActivity extends AppCompatActivity
                     .apply(RequestOptions.circleCropTransform())
                     .into(userImage);
 
-            loginTv.setVisibility(View.VISIBLE);
+            login.setVisibility(View.VISIBLE);
 
 
         }
@@ -380,88 +459,4 @@ public class HomeActivity extends AppCompatActivity
         if (pDialog.isShowing())
             pDialog.dismiss();
     }
-
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.app_bar_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-
-        // listening to search query text change
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // filter recycler view when query submitted
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                // filter recycler view when text is changed
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
-        });
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.app_bar_search) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_new_journal) {
-
-            Intent i = new Intent(HomeActivity.this, NewJournalActivity.class);
-
-            startActivity(i);
-
-        } else if (id == R.id.nav_sign_out) {
-
-            signOut();
-
-        }
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-
 }

@@ -48,7 +48,7 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalsAdapter.MyView
 
         holder.journalTitle.setText(journal.getJournalTitle());
 
-        holder.journalEntry.setText(journal.getJournalText());
+        holder.journalText.setText(journal.getJournalText());
 
         holder.mark.setBackgroundResource(R.color.colorAccent);
 
@@ -96,7 +96,7 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalsAdapter.MyView
         private final List<Journal> originalList;
         private final List<Journal> filteredList;
 
-        public ProviderFilter(JournalsAdapter brandsAdapter, List<Journal> originalList) {
+        ProviderFilter(JournalsAdapter brandsAdapter, List<Journal> originalList) {
             this.brandsAdapter = brandsAdapter;
             this.originalList = new LinkedList<>(originalList);
             this.filteredList = new ArrayList<>();
@@ -134,19 +134,19 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalsAdapter.MyView
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView journalTitle;
-        TextView journalEntry;
+        TextView journalText;
         View mark;
         TextView time;
         TextView date;
 
-        public MyViewHolder(View itemView) {
+        MyViewHolder(View itemView) {
             super(itemView);
 
-            journalTitle = itemView.findViewById(R.id.journal_title);
-            journalEntry = itemView.findViewById(R.id.journal_entry);
-            mark = itemView.findViewById(R.id.mark);
-            time = itemView.findViewById(R.id.journal_time);
-            date = itemView.findViewById(R.id.journal_date);
+            journalTitle = itemView.findViewById(R.id.text_journal_title);
+            journalText = itemView.findViewById(R.id.text_journal_text);
+            mark = itemView.findViewById(R.id.view_mark);
+            time = itemView.findViewById(R.id.text_journal_time);
+            date = itemView.findViewById(R.id.text_journal_date);
         }
     }
 

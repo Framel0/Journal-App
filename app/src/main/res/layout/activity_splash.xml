@@ -9,10 +9,10 @@
     android:orientation="vertical"
     tools:context=".activity.SplashActivity">
 
-
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/image_splash_image"
         android:layout_width="match_parent"
         android:layout_height="150dp"
+        android:contentDescription="@string/splash_image"
         app:srcCompat="@drawable/journal_logo" />
 </LinearLayout>

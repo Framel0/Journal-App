@@ -18,14 +18,14 @@
         android:paddingStart="@dimen/padding_16">
 
         <RelativeLayout
-            android:id="@+id/date_time"
+            android:id="@+id/date_time_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:addStatesFromChildren="true">
 
 
             <TextView
-                android:id="@+id/journal_date"
+                android:id="@+id/text_journal_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -34,7 +34,7 @@
                 tools:text="27/June/2018" />
 
             <TextView
-                android:id="@+id/journal_time"
+                android:id="@+id/text_journal_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -44,22 +44,22 @@
         </RelativeLayout>
 
         <EditText
-            android:id="@+id/entry_title_et"
+            android:id="@+id/edit_entry_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="@string/entry_title"
+            android:hint="@string/entry_title_hint"
             android:inputType="text"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <EditText
-            android:id="@+id/entry_text_et"
+            android:id="@+id/edit_entry_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:gravity="top|start"
-            android:hint="@string/entry_text"
+            android:hint="@string/entry_text_hint"
             android:inputType="textMultiLine"
             android:isScrollContainer="true"
             android:minHeight="200dp" />
@@ -83,13 +83,13 @@
             android:padding="@dimen/padding_5">
 
             <TextView
-                android:id="@+id/char_watcher"
+                android:id="@+id/text_char_watcher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Chars:" />
 
             <TextView
-                android:id="@+id/word_watcher"
+                android:id="@+id/text_word_watcher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Words:" />
@@ -97,7 +97,7 @@
 
 
         <ImageButton
-            android:id="@+id/done_btn"
+            android:id="@+id/btn_done"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"

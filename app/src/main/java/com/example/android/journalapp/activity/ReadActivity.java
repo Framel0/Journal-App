@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class ReadActivity extends AppCompatActivity {
 
@@ -36,7 +37,7 @@ public class ReadActivity extends AppCompatActivity {
 
         journalList.addAll(db.getAllJournals());
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ReadActivity.this);
 
@@ -45,11 +46,11 @@ public class ReadActivity extends AppCompatActivity {
         String journalTitle = sharedPref.getString("journalTitle", "");
         String journalText = sharedPref.getString("journalText", "");
 
-        TextView date = findViewById(R.id.journal_date);
-        TextView time = findViewById(R.id.journal_time);
+        TextView date = findViewById(R.id.text_journal_date);
+        TextView time = findViewById(R.id.text_journal_time);
 
-        TextView entryTitle = findViewById(R.id.entry_title);
-        TextView entryText = findViewById(R.id.entry_text);
+        TextView entryTitle = findViewById(R.id.text_entry_title);
+        TextView entryText = findViewById(R.id.text_entry_text);
 
         date.setText(formatDate(dateStamp));
         time.setText(timeStamp);

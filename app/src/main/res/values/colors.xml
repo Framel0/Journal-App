@@ -7,7 +7,7 @@
 
     <color name="msg_no_notes">#999</color>
     <color name="timestamp">#858585</color>
-    <color name="note_list_text">#232323</color>
+    <color name="journal_list_text">#232323</color>
 
 
 </resources>

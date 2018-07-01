@@ -15,7 +15,7 @@
         android:scrollbars="horizontal" />
 
     <TextView
-        android:id="@+id/empty_journals_view"
+        android:id="@+id/text_empty_journals_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

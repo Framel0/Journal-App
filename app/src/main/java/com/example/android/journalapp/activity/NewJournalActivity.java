@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class NewJournalActivity extends AppCompatActivity {
 
@@ -30,35 +31,13 @@ public class NewJournalActivity extends AppCompatActivity {
 
     private TextView journalTime;
 
-    private EditText entryTitleEt;
-    private EditText entryTextEt;
+    private EditText entryTitle;
+    private EditText entryText;
 
     private TextView wordWatcher;
     private TextView charWatcher;
 
-
-    TextWatcher textWatcher = new TextWatcher() {
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before,
-                                  int count) {
-            charWatcher.setText("Chars:" + String.valueOf(s.length()));
-            wordWatcher.setText("Words:" + wordCount(s.toString()));
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count,
-                                      int after) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
-
-    public static long wordCount(String line) {
+    private static long wordCount(String line) {
         long numWords = 0;
         int index = 0;
         boolean prevWhiteSpace = true;
@@ -86,13 +65,13 @@ public class NewJournalActivity extends AppCompatActivity {
 
         Calendar mCalendar = Calendar.getInstance();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        TextView journalDate = findViewById(R.id.journal_date);
-        journalTime = findViewById(R.id.journal_time);
+        TextView journalDate = findViewById(R.id.text_journal_date);
+        journalTime = findViewById(R.id.text_journal_time);
 
-        entryTitleEt = findViewById(R.id.entry_title_et);
-        entryTextEt = findViewById(R.id.entry_text_et);
+        entryTitle = findViewById(R.id.edit_entry_title);
+        entryText = findViewById(R.id.edit_entry_text);
 
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM/yyyy", Locale.UK);
@@ -105,38 +84,59 @@ public class NewJournalActivity extends AppCompatActivity {
         journalTime.setText(formattedTime);
 
 
-        charWatcher = findViewById(R.id.char_watcher);
-        wordWatcher = findViewById(R.id.word_watcher);
+        charWatcher = findViewById(R.id.text_char_watcher);
+        wordWatcher = findViewById(R.id.text_word_watcher);
 
-        charWatcher.setText("Chas:0");
-        wordWatcher.setText("Words:0");
+        charWatcher.setText(R.string.characters_default);
+        wordWatcher.setText(R.string.words_default);
 
-        entryTextEt.addTextChangedListener(textWatcher);
+        entryText.addTextChangedListener(new TextWatcher() {
 
-        ImageButton done = findViewById(R.id.done_btn);
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                charWatcher.setText(String.format("%s%s", getString(R.string.characters_word), String.valueOf(s.length())));
+                wordWatcher.setText(String.format(Locale.getDefault(), "%s%d", getString(R.string.words_word), wordCount(s.toString())));
+            }
+
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
+        ImageButton done = findViewById(R.id.btn_done);
 
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 // Show toast message when no text is entered
-                if (TextUtils.isEmpty(entryTitleEt.getText().toString())) {
+                if (TextUtils.isEmpty(entryTitle.getText().toString())) {
 
-                    Toast.makeText(getApplicationContext(), R.string.enter_title, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.enter_title_toast, Toast.LENGTH_SHORT).show();
 
-                } else if (TextUtils.isEmpty(entryTextEt.getText().toString())) {
+                } else if (TextUtils.isEmpty(entryText.getText().toString())) {
 
-                    Toast.makeText(getApplicationContext(), R.string.enter_text, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.enter_text_toast, Toast.LENGTH_SHORT).show();
 
                 } else {
 
                     // create new journal
-                    createJournal(entryTitleEt.getText().toString().trim(), entryTextEt.getText().toString().trim(), journalTime.getText().toString());
+                    createJournal(entryTitle.getText().toString().trim(), entryText.getText().toString().trim(), journalTime.getText().toString());
 
                     startActivity(new Intent(NewJournalActivity.this, HomeActivity.class));
                     finish();
 
-                    Toast.makeText(getApplicationContext(), R.string.journal_saved, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.journal_saved_toast, Toast.LENGTH_SHORT).show();
 
                 }
 
